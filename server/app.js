@@ -1,45 +1,47 @@
-const koa = require('koa');
-const koaRouter = require('koa-router');
-const connectToDb = require('./db/connection.js');
+import koa from 'koa';
+import koaRouter from 'koa-router';
+import { connectToDb } from './db/Connection.js';
+import ThreadsController from './controllers/ThreadsController.js';
+import CommentsController from './controllers/CommentsController.js';
 
 const app = new koa();
 const router = new koaRouter();
 const dbInstanceMongoose = connectToDb();
-const Thread = dbInstanceMongoose.thread;
-const Comment = dbInstanceMongoose.comment;
+const threadsController = new ThreadsController(dbInstanceMongoose);
+const commentsController = new CommentsController(dbInstanceMongoose);
 
-router.get('/hello', getMessage);
-router.get('/hello/:id', sendId);
+router.get('/list', listThreads);
+router.get('/thread/create', createThread);
+router.get('/comment/add', addComment);
 router.get('/404', notFound);
 
-async function getMessage(ctx) {
-    const threads = await Thread.find();
-    console.log(threads);
+// THREADS
 
-    ctx.body = "Hello world!";
+async function listThreads(ctx) {
+    const threads = await threadsController.list();
+
+    //console.log(threads);
+
+    ctx.body = threads;
 }
 
-function sendId(ctx) {
-    ctx.body = 'The id you specified is ' + ctx.params.id;
+function createThread(ctx) {
+    // TODO: check if successfull
+    threadsController.create('Mladen', 'This is my first thread.');
 
-    var newThread = new Thread({
-        author: 'Mladen',
-        content: 'This is my first thread.',
-        upvotes: 0,
-        downvotes: 0,
-        createdOn: Date.now(),
-        comments: []
-    });
-
-    newThread.save(function (err, res) {
-        if (err) {
-            console.error(err);
-        }
-        else {
-            console.info('Thread saved!');
-        }
-    });
+    ctx.body = 'The thread was created successfully!';
 }
+
+// COMMENTS
+
+async function addComment(ctx) {
+    // TODO: check if successfull
+    await commentsController.create('61790a8202b3c549fa0ebdd8', 'Mladen', 'This is my first comment.');
+
+    ctx.body = 'The comment was created successfully!';
+}
+
+// INFRASTRUCTURE
 
 function notFound(ctx) {
     ctx.body = '404: Not Found!';

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const threadSchema = Schema({
+export const threadSchema = Schema({
     _id: Schema.Types.ObjectId,
     author: String,
     content: String,
