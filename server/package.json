@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Koa-based server for a reddit-like app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon ./app.js",
+    "start": "node ./app.js",
+    "setup-db": "node ./db/schema/setup.js"
+  },
+  "author": "DENI",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1",
+    "mongoose": "^6.0.12"
+  }
+}
